@@ -1,0 +1,106 @@
+﻿<Window x:Class="GeometryEditor.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GeometryEditor"
+        xmlns:converter="clr-namespace:GeometryEditor.Converter"
+        xmlns:viewModel="clr-namespace:GeometryEditor.ViewModel"
+        mc:Ignorable="d"
+        Title="MainWindow"
+        Height="450"
+        Width="800">
+    <Window.Resources>
+
+        <Style x:Key="ListBoxItemStyle1"
+               TargetType="{x:Type ListBoxItem}">
+            <Setter Property="Canvas.Left"
+                    Value="{Binding X}" />
+            <Setter Property="Canvas.Top"
+                    Value="{Binding Y}" />
+            <Setter Property="ContentTemplate"
+                    Value="{DynamicResource DataTemplate1}" />
+
+        </Style>
+        <DataTemplate x:Key="DataTemplate1">
+            <Thumb Background="Red"
+                   DragDelta="ThumbDragDelta"
+                   Width="10"
+                   Height="10"
+                   Focusable="True">
+                <Thumb.ToolTip>
+
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="X:" />
+                        <Label Content="{Binding X}" />
+                        <Label Content="Y:" />
+                        <Label Content="{Binding Y}" />
+                    </StackPanel>
+                </Thumb.ToolTip>
+                <Thumb.Template>
+                    <ControlTemplate>
+                        <Rectangle Fill="Transparent"
+                                   StrokeThickness="4"
+                                   Stroke="Red" />
+                    </ControlTemplate>
+                </Thumb.Template>
+            </Thumb>
+        </DataTemplate>
+
+    </Window.Resources>
+    <Window.DataContext>
+        <viewModel:MainViewModel></viewModel:MainViewModel>
+    </Window.DataContext>
+    <Grid>
+        <Grid.Resources>
+            <converter:VerticesConverter x:Key="VerticesConverter" />
+            <converter:XY_5Converter x:Key="XY_5Converter" />
+        </Grid.Resources>
+        <Polygon Points="{Binding Vertices, Converter={StaticResource VerticesConverter},UpdateSourceTrigger=PropertyChanged}"
+                 Name="Polyline"
+                 Margin="0"
+                 Stroke="Black"
+                 StrokeThickness="1"
+                 StrokeLineJoin="Round" />
+        <ListBox ItemsSource="{Binding Vertices}"
+                 Background="Transparent"
+                 SelectionMode="Multiple"
+                 Style="{x:Null}"
+                 Margin="-10,-8.5"
+                 ItemContainerStyle="{DynamicResource ListBoxItemStyle1}"
+                >
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas />
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Thumb Background="Red"
+                           DragDelta="ThumbDragDelta"
+                           Focusable="True"> 
+                        <Thumb.ToolTip> 
+                            <StackPanel Orientation="Horizontal">
+                                <Label>X:</Label>
+                                <Label Content="{Binding X}"></Label>
+                                <Label>Y:</Label>
+                                <Label Content="{Binding Y}"></Label>
+                            </StackPanel>
+                        </Thumb.ToolTip>
+                        <Thumb.Template>
+                            <ControlTemplate>
+                                <Rectangle Fill="Transparent"
+                                           StrokeThickness="1"
+                                           Width="10"
+                                           Height="10"
+                                           Stroke="Red">
+                                </Rectangle>
+                            </ControlTemplate>
+                        </Thumb.Template>
+
+                    </Thumb>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </Grid>
+</Window>
